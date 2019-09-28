@@ -1,3 +1,3 @@
-Here you will see the codes, which I have created for the courses.
+### Courses:
 
-с++ - https://www.coursera.org/specializations/c-plus-plus-modern-development
+[с++ belts](https://www.coursera.org/specializations/c-plus-plus-modern-development)
