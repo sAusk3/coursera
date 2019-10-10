@@ -44,8 +44,8 @@ namespace Graph {
 
   template <typename Weight>
   EdgeId DirectedWeightedGraph<Weight>::AddEdge(const Edge<Weight>& edge) {
+      const EdgeId id = edges_.size();
     edges_.push_back(edge);
-    const EdgeId id = edges_.size();
     incidence_lists_[edge.from].push_back(id);
     return id;
   }
