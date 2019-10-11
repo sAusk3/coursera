@@ -49,6 +49,7 @@ namespace Svg {
     class Figure {
     public:
         Figure() = default;
+        ~Figure() = default;
 
         void SetFillColor(const Color& fill_) {
             fill = fill_;
