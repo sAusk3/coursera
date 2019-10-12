@@ -3,3 +3,4 @@
 **.idea
 **CMakeLists.txt
 *.out
+**.ipynb_checkpoints
