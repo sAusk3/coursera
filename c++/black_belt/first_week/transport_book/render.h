@@ -35,6 +35,24 @@ public:
         Svg::Document map;
 
         // buses' lines rendering
+        RenderBusLine(buses, stops_positions, map);
+
+        // stops' circles rendering
+        RenderStopCircle(stops_positions, map);
+
+        // stops' names rendering
+        RenderStopName(stops_positions, map);
+
+        std::stringstream ss;
+        map.Render(ss);
+
+        return ss.str();
+    }
+
+private:
+    void RenderBusLine(const std::map<std::string, const Descriptions::Bus*>& buses,
+                       std::map<std::string, Svg::Point>& stops_positions,
+                       Svg::Document& map) {
         size_t counter = 0;
         for (const auto& [_, bus] : buses) {
             Svg::Polyline polyline;
@@ -51,8 +69,10 @@ public:
             ++counter;
             counter %= settings.color_palette.size();
         }
+    }
 
-        // stops' circles rendering
+    void RenderStopCircle(std::map<std::string, Svg::Point>& stops_positions,
+                          Svg::Document& map) {
         for (const auto& [_, position] : stops_positions) {
             Svg::Circle circle;
             circle.SetCenter(position);
@@ -60,11 +80,13 @@ public:
             circle.SetFillColor("white");
             map.Add(circle);
         }
+    }
 
-        // stops' names rendering
+    void RenderStopName(std::map<std::string, Svg::Point>& stops_positions,
+                        Svg::Document& map) {
         for (const auto& [name, position] : stops_positions) {
             auto default_stop_text = [](const Svg::Point position, const Render::Settings& settings_,
-                    const std::string& name) {
+                                        const std::string& name) {
                 Svg::Text text;
                 text.SetPoint(position);
                 text.SetOffset(settings_.stop_label_offset);
@@ -88,13 +110,7 @@ public:
             map.Add(substrate);
             map.Add(inscription);
         }
-
-        std::stringstream ss;
-        map.Render(ss);
-
-        return ss.str();
     }
 
-private:
     Settings settings;
 };
