@@ -37,6 +37,10 @@ namespace Json {
         }
         return Svg::Color{color_array[0].AsInt(), color_array[1].AsInt(), color_array[2].AsInt(), color_array[3].AsDouble()};
     }
+    Svg::Point AsPoint() const {
+        auto point = AsArray();
+        return Svg::Point{point[0].AsDouble(), point[1].AsDouble()};
+    }
   };
 
   class Document {

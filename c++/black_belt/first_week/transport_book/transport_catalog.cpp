@@ -18,29 +18,7 @@ TransportCatalog::TransportCatalog(vector<Descriptions::InputQuery> data, const 
   double min_lon = std::numeric_limits<double>::max();
   const double eps = std::numeric_limits<double>::epsilon();
 
-  Render::Settings renderSettings{
-      .width = render_settings_json.at("width").AsDouble(),
-      .height = render_settings_json.at("height").AsDouble(),
-      .padding = render_settings_json.at("padding").AsDouble(),
-      .stop_radius = render_settings_json.at("stop_radius").AsDouble(),
-      .line_width = render_settings_json.at("line_width").AsDouble(),
-      .stop_label_font_size = render_settings_json.at("stop_label_font_size").AsInt(),
-
-      .stop_label_offset = [&]() {
-          const auto& point = render_settings_json.at("stop_label_offset").AsArray();
-          return Svg::Point{point[0].AsDouble(), point[1].AsDouble()};
-      }(),
-      .underlayer_color = render_settings_json.at("underlayer_color").AsColor(),
-      .underlayer_width = render_settings_json.at("underlayer_width").AsDouble(),
-      .color_palette = [&]() {
-          const auto& color_array = render_settings_json.at("color_palette").AsArray();
-          std::vector<Svg::Color> result(color_array.size());
-          for (size_t i = 0; i < result.size(); ++i) {
-              result[i] = color_array[i].AsColor();
-          }
-          return result;
-      }()
-  };
+  Render::Settings renderSettings = Render::settingsFromJson(render_settings_json);
 
   Descriptions::StopsDict stops_dict;
   for (const auto& item : Range{begin(data), stops_end}) {

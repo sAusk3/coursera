@@ -234,6 +234,9 @@ namespace Svg {
             if (font_family) {
                 os << " font-family=\\\"" << font_family.value() << "\\\"";
             }
+            if (font_weight) {
+                os << " font-weight=\\\"" << font_weight.value() << "\\\"";
+            }
             os << ">" << text;
             os << "</text>";
         }
@@ -263,6 +266,11 @@ namespace Svg {
             return *this;
         }
 
+        Text& SetFontWeight(const std::string& font_weight_) {
+            font_weight = font_weight_;
+            return *this;
+        }
+
     private:
         double x = 0;
         double y = 0;
@@ -271,6 +279,7 @@ namespace Svg {
         uint32_t font_size = 1;
         std::optional<std::string> font_family;
         std::string text;
+        std::optional<std::string> font_weight;
     };
 
     class Document {
