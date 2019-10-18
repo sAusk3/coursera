@@ -58,8 +58,9 @@ namespace YellowPages {
         }
     }
 
-    void SetRepeatedField(Company& company, const std::string& field_name, const Signals& signals, const Providers& providers) {
+    static void SetRepeatedField(Company& company, const std::string& field_name, const Signals& signals, const Providers& providers) {
         Signals has_field = HasRepeatedField(company, field_name, signals, providers);
+        std::set<std::string> serialized_signals;
         if (!has_field.empty()) {
             for (auto& signal : has_field) {
                 auto signal_company = signal.company();
@@ -67,8 +68,12 @@ namespace YellowPages {
                 auto reflection = signal_company.GetReflection();
                 for (size_t i = 0; i < reflection->FieldSize(signal_company, descriptor); ++i) {
                     const auto& added_message = reflection->GetRepeatedMessage(signal_company, descriptor, i);
-                    company.GetReflection()->AddMessage(&company, getDescriptor(company, field_name))->CopyFrom(added_message);
+                    serialized_signals.insert(added_message.SerializeAsString());
                 }
+            }
+            for (const auto& serialized_signal : serialized_signals) {
+                auto msg = company.GetReflection()->AddMessage(&company, getDescriptor(company, field_name));
+                msg->ParseFromString(serialized_signal);
             }
         }
     }
@@ -80,83 +85,8 @@ namespace YellowPages {
       SetUniqueField(company, "address", signals, providers);
 
       SetRepeatedField(company, "names", signals, providers);
-      std::sort(company.mutable_names()->begin(), company.mutable_names()->end(), [](const YellowPages::Name& lhs,
-                                                                                     const YellowPages::Name& rhs) {
-          if (lhs.value() < rhs.value()) {
-              return true;
-          }
-          if (rhs.value() > rhs.value()) {
-              return false;
-          }
-          return lhs.type() < rhs.type();
-      });
-      company.mutable_names()->erase(std::unique(company.mutable_names()->begin(), company.mutable_names()->end(), [](const YellowPages::Name& lhs,
-                                                                                                                      const YellowPages::Name& rhs) {
-          return lhs.value() == rhs.value() && lhs.type() == rhs.type();
-      }), company.mutable_names()->end());
-
       SetRepeatedField(company, "phones", signals, providers);
-      std::sort(company.mutable_phones()->begin(), company.mutable_phones()->end(), [](const YellowPages::Phone& lhs,
-              const YellowPages::Phone& rhs) {
-          if (lhs.number() < rhs.number()) {
-              return true;
-          }
-          if (lhs.number() > rhs.number()) {
-              return false;
-          }
-
-          if (lhs.country_code() < rhs.country_code()) {
-              return true;
-          }
-          if (lhs.country_code() > rhs.country_code()) {
-              return false;
-          }
-
-          if (lhs.description() < rhs.description()) {
-              return true;
-          }
-          if (lhs.description() > rhs.description()) {
-              return false;
-          }
-
-          if (lhs.extension() < rhs.extension()) {
-              return true;
-          }
-          if (lhs.extension() > rhs.extension()) {
-              return false;
-          }
-
-          if (lhs.formatted() < rhs.formatted()) {
-              return true;
-          }
-          if (lhs.formatted() > rhs.formatted()) {
-              return false;
-          }
-
-          if (lhs.local_code() < rhs.local_code()) {
-              return true;
-          }
-          if (lhs.local_code() > rhs.local_code()) {
-              return false;
-          }
-
-          return lhs.type() < rhs.type();
-      });
-      company.mutable_phones()->erase(std::unique(company.mutable_phones()->begin(), company.mutable_phones()->end(), [](const YellowPages::Phone& lhs,
-                                                                                                                      const YellowPages::Phone& rhs) {
-          return lhs.number() == rhs.number() && lhs.country_code() == rhs.country_code() && lhs.description() == rhs.description() &&
-                 lhs.extension() == rhs.extension() && lhs.formatted() == rhs.formatted() && lhs.local_code() == rhs.local_code() && lhs.type() == rhs.type();
-      }), company.mutable_phones()->end());
-
       SetRepeatedField(company, "urls", signals, providers);
-      std::sort(company.mutable_urls()->begin(), company.mutable_urls()->end(), [](const YellowPages::Url& lhs,
-              const YellowPages::Url& rhs) {
-          return lhs.value() < rhs.value();
-      });
-      company.mutable_urls()->erase(std::unique(company.mutable_urls()->begin(), company.mutable_urls()->end(), [](const YellowPages::Url& lhs,
-      const YellowPages::Url& rhs) {
-          return lhs.value() == rhs.value();
-      }),  company.mutable_urls()->end());
 
       return company;
   }
