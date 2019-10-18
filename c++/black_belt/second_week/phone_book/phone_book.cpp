@@ -46,8 +46,8 @@ std::vector<Contact> PhoneBook::contactsFromProto(PhoneBookSerialize::ContactLis
 }
 
 PhoneBook::ContactRange PhoneBook::FindByNamePrefix(std::string_view name_prefix) const {
-    auto begin = std::lower_bound(contacts_.begin(), contacts_.end(), name_prefix, cmp1);
-    auto end = std::upper_bound(begin, contacts_.end(), name_prefix, cmp2);
+    auto begin = std::lower_bound(contacts_.begin(), contacts_.end(), name_prefix, lower_bound_cmp);
+    auto end = std::upper_bound(begin, contacts_.end(), name_prefix, upper_bound_cmp);
     return ContactRange{begin, end};
 }
 

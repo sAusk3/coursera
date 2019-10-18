@@ -34,11 +34,11 @@ public:
     static std::vector<Contact> contactsFromProto(PhoneBookSerialize::ContactList& contact_list);
 
 private:
-    static bool cmp1(const Contact& contact, const std::string_view& prefix) {
+    static bool lower_bound_cmp(const Contact& contact, const std::string_view& prefix) {
         return contact.name < prefix && contact.name.find(prefix) != 0;
     }
 
-    static bool cmp2(const std::string_view& prefix, const Contact& contact) {
+    static bool upper_bound_cmp(const std::string_view& prefix, const Contact& contact) {
         return contact.name.find(prefix);
     }
 

@@ -90,5 +90,4 @@ namespace YellowPages {
 
       return company;
   }
-
 }
